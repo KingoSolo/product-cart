@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './search-input.html',
   styleUrl: './search-input.css',
 })
-export class SearchInput {
+export class SearchInputComponent {
 searchQuery = '';
   @Output() searchChanged = new EventEmitter<string>();
 
