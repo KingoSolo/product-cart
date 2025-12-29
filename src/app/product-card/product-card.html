@@ -1,5 +1,8 @@
 <div class="product-card" [class.selected]="selected" (click)="onCardClick()">
-  <img [src]="product.imageUrl" alt="{{ product.name }}" />
+
+  <div class="image-wrapper">
+  <img [src]="product.imageUrl" [alt]="product.name" />
+</div>
   <div class="content">
     <h3>{{ product.name }}</h3>
     <p class="description">{{ product.description }}</p>
