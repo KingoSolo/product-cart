@@ -1,1 +1,6 @@
-<p>product-card works!</p>
+<div class="card" [class.selected]="selected" (click)="onCardClick()">
+  <img [src]="product.imageUrl" alt="{{ product.name }}">
+  <h3>{{ product.name }}</h3>
+  <p>{{ product.description }}</p>
+  <span>{{ product.price  }}</span>
+</div>
