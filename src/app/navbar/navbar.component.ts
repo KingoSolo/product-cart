@@ -6,7 +6,7 @@ import { SearchInputComponent } from '../search-input/search-input.component';
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar {
+export class NavbarComponent {
   @Input() cartCount: number = 0; // Add this: receive cart length from parent
   @Output() searchQuery = new EventEmitter<string>(); // Add this: emit search to parent
 

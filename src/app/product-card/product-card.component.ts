@@ -1,18 +1,20 @@
-import { Component,EventEmitter,Input,Output } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Product } from '../models/product.model';
 
 @Component({
   selector: 'app-product-card',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './product-card.html',
-  styleUrl: './product-card.css',
+  styleUrl: './product-card.css'
 })
-export class ProductCard {
-  @Input() product!: Product;     // Receive product data
-  @Input() selected: boolean = false; // Receive selected state
-  @Output() productSelected = new EventEmitter<Product>(); // Emit when clicked
+export class ProductCardComponent {
+  @Input() product!: Product;
+  @Input() selected = false;
+  @Output() productSelected = new EventEmitter<Product>();
 
-  onCardClick() {                 // Add this method
+  onCardClick() {
     this.productSelected.emit(this.product);
   }
 }

@@ -1,6 +1,8 @@
-<div class="card" [class.selected]="selected" (click)="onCardClick()">
-  <img [src]="product.imageUrl" alt="{{ product.name }}">
-  <h3>{{ product.name }}</h3>
-  <p>{{ product.description }}</p>
-  <span>{{ product.price  }}</span>
+<div class="product-card" [class.selected]="selected" (click)="onCardClick()">
+  <img [src]="product.imageUrl" alt="{{ product.name }}" />
+  <div class="content">
+    <h3>{{ product.name }}</h3>
+    <p class="description">{{ product.description }}</p>
+    <div class="price">${{ product.price.toFixed(2) }}</div>
+  </div>
 </div>

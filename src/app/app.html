@@ -1,14 +1,15 @@
 
 <app-navbar [cartCount]="cart.length" (searchQuery)="onSearch($event)"></app-navbar>
-    <div class="product-grid">
-      @for (product of filteredProducts; track product.id) {
-        <app-product-card
-          [product]="product"
-          [selected]="isSelected(product)"
-          (productSelected)="onProductSelected($event)"
-        ></app-product-card>
-      }
-    </div>
+
+<div class="product-grid">
+  @for (product of filteredProducts; track product.id) {
+    <app-product-card
+      [product]="product"
+      [selected]="isSelected(product)"
+      (productSelected)="onProductSelected($event)"
+    ></app-product-card>
+  }
+</div>
 
 
 
