@@ -4,14 +4,19 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { ProductCardComponent } from './product-card/product-card.component';
 import { Product } from './models/product.model';
 import { ProductService } from './services/product.service';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, ProductCardComponent],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    NavbarComponent
+  ],
   templateUrl: './app.html',
-  styleUrl: './app.css'
 })
+
 export class AppComponent {
   products: Product[] = [];
 

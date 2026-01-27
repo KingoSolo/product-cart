@@ -1,0 +1,17 @@
+
+
+
+
+
+<input
+  type="text"
+  placeholder="Search products..."
+  
+  (input)="onSearch()"
+/>
+
+<app-product-card
+  *ngFor="let product of filteredProducts"
+  [product]="product"
+>
+</app-product-card>

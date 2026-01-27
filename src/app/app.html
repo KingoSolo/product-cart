@@ -6,15 +6,5 @@
 <router-outlet></router-outlet>
 
 
-<div class="product-grid">
-  @for (product of filteredProducts; track product.id) {
-    <app-product-card
-      [product]="product"
-      [selected]="isSelected(product)"
-      (productSelected)="onProductSelected($event)"
-    ></app-product-card>
-  }
-</div>
-
 
 
