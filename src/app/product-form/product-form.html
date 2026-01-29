@@ -1,0 +1,47 @@
+<h2>Add New Product</h2>
+
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+
+  <label>Name</label>
+  <input formControlName="name" />
+  <small *ngIf="productForm.get('name')?.touched && productForm.get('name')?.invalid">
+    Name must be at least 3 characters
+  </small>
+
+  <label>Description</label>
+  <textarea formControlName="description"></textarea>
+
+  <label>Price</label>
+  <input type="number" formControlName="price" />
+
+  <label>Category</label>
+  <input formControlName="category" />
+
+  <label>Image URL</label>
+  <input formControlName="imageUrl" />
+
+  <label>
+    <input type="checkbox" formControlName="inStock" />
+    In Stock
+  </label>
+
+  <label>Rating</label>
+  <input type="number" formControlName="rating" min="0" max="5" />
+
+  <h3>Properties</h3>
+
+  <div formArrayName="properties">
+    <div *ngFor="let prop of properties.controls; let i = index" [formGroupName]="i">
+      <input placeholder="Color" formControlName="color" />
+      <input placeholder="Weight" formControlName="weight" />
+      <button type="button" (click)="removeProperty(i)">Remove</button>
+    </div>
+  </div>
+
+  <button type="button" (click)="addProperty()">Add Property</button>
+
+  <button type="submit" [disabled]="productForm.invalid">
+    Create Product
+  </button>
+
+</form>

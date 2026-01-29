@@ -1,0 +1,15 @@
+form {
+  max-width: 600px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+input, textarea {
+  padding: 8px;
+}
+
+small {
+  color: red;
+}
