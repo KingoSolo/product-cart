@@ -1,15 +1,62 @@
 form {
   max-width: 600px;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  margin: 40px auto;
+  padding: 24px;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
 }
 
-input, textarea {
-  padding: 8px;
+h2 {
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-small {
-  color: red;
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
+  border-color: #e53935;
+}
+
+.error {
+  color: #e53935;
+  font-size: 0.85em;
+  margin-bottom: 8px;
+}
+
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  background: #2196f3;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #bdbdbd;
+  cursor: not-allowed;
+}
+
+.property {
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
 }
