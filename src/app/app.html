@@ -1,10 +1,25 @@
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+  
+  <header class="bg-blue-400 text-white shadow-xl">
+    <div class="container mx-auto px-4 py-8">
+      <h1 class="text-4xl md:text-5xl font-bold mb-2">{{ title }}</h1>
+      <p class="text-blue-100 text-lg">Error Handling & State Management with Signals</p>
+    </div>
+  </header>
 
-<app-navbar [cartCount]="cart.length" (searchQuery)="onSearch($event)">
-  [cartCount]="cart.length"
-  (searchQuery)="onSearch($event)">
-</app-navbar>
-<router-outlet></router-outlet>
+  
+  <div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <div class="lg:col-span-2 space-y-8">
+        <app-product-form />
+        <app-product-list />
+      </div>
 
-
-
-
+      
+      <div class="lg:col-span-1">
+        <app-cart />
+      </div>
+    </div>
+  </div>
+</div>

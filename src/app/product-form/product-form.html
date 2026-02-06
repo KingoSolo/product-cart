@@ -1,47 +1,138 @@
-<h2>Add New Product</h2>
+<div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">Create New Product</h2>
 
-<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-
-  <label>Name</label>
-  <input formControlName="name" />
-  <small *ngIf="productForm.get('name')?.touched && productForm.get('name')?.invalid">
-    Name must be at least 3 characters
-  </small>
-
-  <label>Description</label>
-  <textarea formControlName="description"></textarea>
-
-  <label>Price</label>
-  <input type="number" formControlName="price" />
-
-  <label>Category</label>
-  <input formControlName="category" />
-
-  <label>Image URL</label>
-  <input formControlName="imageUrl" />
-
-  <label>
-    <input type="checkbox" formControlName="inStock" />
-    In Stock
-  </label>
-
-  <label>Rating</label>
-  <input type="number" formControlName="rating" min="0" max="5" />
-
-  <h3>Properties</h3>
-
-  <div formArrayName="properties">
-    <div *ngFor="let prop of properties.controls; let i = index" [formGroupName]="i">
-      <input placeholder="Color" formControlName="color" />
-      <input placeholder="Weight" formControlName="weight" />
-      <button type="button" (click)="removeProperty(i)">Remove</button>
+ 
+  <div *ngIf="successMessage()" 
+       class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg mb-4 animate-fade-in">
+    <div class="flex items-center">
+      <svg class="w-6 h-6 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+      </svg>
+      <p class="text-green-700 font-medium">{{ successMessage() }}</p>
     </div>
   </div>
 
-  <button type="button" (click)="addProperty()">Add Property</button>
 
-  <button type="submit" [disabled]="productForm.invalid">
-    Create Product
-  </button>
+  <div *ngIf="formError()" 
+       class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg mb-4">
+    <div class="flex items-center">
+      <svg class="w-6 h-6 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+      </svg>
+      <p class="text-red-700 font-medium">{{ formError() }}</p>
+    </div>
+  </div>
 
-</form>
+  
+  <div *ngIf="error()" 
+       class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg mb-4">
+    <div class="flex items-center">
+      <svg class="w-6 h-6 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+      </svg>
+      <p class="text-red-700 font-medium">{{ error() }}</p>
+    </div>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Title -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Product Title *
+        </label>
+        <input 
+          type="text" 
+          [(ngModel)]="title"
+          name="title"
+          required
+          placeholder="Enter product title"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+      </div>
+
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Price ($) *
+        </label>
+        <input 
+          type="number" 
+          [(ngModel)]="price"
+          name="price"
+          step="0.01"
+          required
+          placeholder="0.00"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+      </div>
+    </div>
+
+    
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        Description *
+      </label>
+      <textarea 
+        [(ngModel)]="description"
+        name="description"
+        rows="3"
+        required
+        placeholder="Enter product description"
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"></textarea>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Category *
+        </label>
+        <input 
+          type="text" 
+          [(ngModel)]="category"
+          name="category"
+          required
+          placeholder="e.g., electronics, clothing"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+      </div>
+
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Image URL *
+        </label>
+        <input 
+          type="url" 
+          [(ngModel)]="image"
+          name="image"
+          required
+          placeholder="https://example.com/image.jpg"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+      </div>
+    </div>
+
+  
+    <div class="flex gap-4 pt-4">
+      <button 
+        type="submit"
+        [disabled]="submitting() || loading()"
+        class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-semibold shadow-md hover:shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none">
+        <span *ngIf="!submitting() && !loading()">Create Product</span>
+        <span *ngIf="submitting() || loading()" class="flex items-center justify-center">
+          <svg class="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Creating...
+        </span>
+      </button>
+
+      <button 
+        type="button"
+        (click)="resetForm()"
+        [disabled]="submitting() || loading()"
+        class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+        Reset
+      </button>
+    </div>
+  </form>
+</div>

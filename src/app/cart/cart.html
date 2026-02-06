@@ -1,5 +1,83 @@
-<ul>
-  <li *ngFor="let item of cartItems">
-    {{ item.name }}
-  </li>
-</ul>
+<div class="bg-white rounded-xl shadow-lg p-6 sticky top-4">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+      🛒 Cart
+      <span class="text-lg font-normal text-gray-500">({{ cartCount() }})</span>
+    </h2>
+    
+    <button 
+      *ngIf="cart().length > 0"
+      (click)="clearCart()"
+      class="text-red-600 hover:text-red-700 font-medium text-sm transition-colors">
+      Clear All
+    </button>
+  </div>
+
+
+  <div *ngIf="cart().length === 0" class="text-center py-12">
+    <div class="text-6xl mb-4">🛒</div>
+    <p class="text-lg text-gray-500 mb-2">Your cart is empty</p>
+    <p class="text-sm text-gray-400">Add products to get started!</p>
+  </div>
+
+
+  <div *ngIf="cart().length > 0" class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+    <div *ngFor="let item of cart()" 
+         class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+      
+
+      <img [src]="item.product.image" 
+           [alt]="item.product.title"
+           class="w-16 h-16 object-contain flex-shrink-0 bg-gray-50 rounded">
+
+
+      <div class="flex-1 min-w-0">
+        <h3 class="font-semibold text-gray-800 text-sm line-clamp-2 mb-1">
+          {{ item.product.title }}
+        </h3>
+        <p class="text-blue-600 font-bold text-sm">
+          {{ item.product.price | currency }}
+        </p>
+        
+    
+        <div class="flex items-center gap-2 mt-2">
+          <button 
+            (click)="updateQuantity(item.product.id, item.quantity - 1)"
+            class="w-7 h-7 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition-colors">
+            <span class="text-sm font-bold">−</span>
+          </button>
+          <span class="w-8 text-center font-semibold text-sm">{{ item.quantity }}</span>
+          <button 
+            (click)="updateQuantity(item.product.id, item.quantity + 1)"
+            class="w-7 h-7 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition-colors">
+            <span class="text-sm font-bold">+</span>
+          </button>
+        </div>
+      </div>
+
+     
+      <div class="flex flex-col items-end gap-2">
+        <p class="font-bold text-gray-800 text-sm">
+          {{ item.product.price * item.quantity | currency }}
+        </p>
+        <button 
+          (click)="removeFromCart(item.product.id)"
+          class="text-red-600 hover:text-red-700 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L57m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+</svg>
+</button>
+</div>
+</div>
+  </div>
+  <!-- Total -->
+  <div *ngIf="cart().length > 0" class="border-t mt-6 pt-6">
+    <div class="flex justify-between items-center mb-4">
+      <span class="text-lg font-semibold text-gray-700">Total:</span>
+      <span class="text-2xl font-bold text-blue-600">{{ cartTotal() | currency }}</span>
+    </div>
+    <button class="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-4 rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 font-semibold shadow-md hover:shadow-lg">
+      Checkout
+    </button>
+  </div>
+</div>

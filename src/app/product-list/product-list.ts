@@ -1,50 +1,41 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductCardComponent } from '../product-card/product-card.component';
 import { ProductService } from '../services/product.service';
-import { Product } from '../models/product.model';
-import { Router } from '@angular/router';
+import { StateService } from '../services/state.service';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent],
-  templateUrl: './product-list.html'
+  imports: [CommonModule],
+  templateUrl: './product-list.html',
 })
 export class ProductListComponent implements OnInit {
+  private productService = inject(ProductService);
+  protected stateService = inject(StateService);
 
-  products: Product[] = [];
-  filteredProducts: Product[] = [];
+  products = this.stateService.products;
+  loading = this.stateService.loading;
+  error = this.stateService.error;
+  isEmpty = this.stateService.isEmpty;
 
-  constructor(
-    private productService: ProductService,
-    private router: Router
-  ) {}
-  searchTerm = '';
+  ngOnInit(): void {
+    this.loadProducts();
+  }
 
- 
-onSearch() {
-  this.filteredProducts = this.products.filter(p =>
-    p.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-  );
-}
-
-
-    ngOnInit() {
-    this.productService.getAllProducts().subscribe(products => {
-      console.log('PRODUCTS FROM API:', products);
-      this.products = products;
-      this.filteredProducts = products;
+  loadProducts(): void {
+    this.productService.getAllProducts().subscribe({
+      error: (err) => {
+        console.error('Error loading products:', err);
+      }
     });
   }
 
+  addToCart(product: any): void {
+    this.stateService.addToCart(product);
+  }
 
-
-  onProductClick(product: Product) {
-    this.router.navigate(
-      ['/products', product.id],
-      { queryParams: { category: 'Electronics' } }
-    );
+  retryLoad(): void {
+    this.stateService.clearError();
+    this.loadProducts();
   }
 }
-

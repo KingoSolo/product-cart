@@ -1,75 +1,82 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  FormArray,
-  ReactiveFormsModule
-} from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { ProductService } from '../services/product.service';
+import { StateService } from '../services/state.service';
 
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './product-form.html',
-  styleUrls: ['./product-form.css']
 })
 export class ProductFormComponent {
-  productForm: FormGroup;
+  private productService = inject(ProductService);
+  protected stateService = inject(StateService);
 
-  constructor(
-    private fb: FormBuilder,
-    private productService: ProductService,
-    private router: Router
-  ) {
-    this.productForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      description: ['', [Validators.required, Validators.minLength(10)]],
-      price: [null, [Validators.required, Validators.min(50)]],
-      category: ['', Validators.required],
-      imageUrl: [
-        '',
-        [Validators.required, Validators.pattern('https?://.+')]
-      ],
-      inStock: [true],
-      rating: [0, [Validators.min(0), Validators.max(5)]],
-      properties: this.fb.array([this.createProperty()])
-    });
+  title = signal('');
+  price = signal<number | null>(null);
+  description = signal('');
+  category = signal('');
+  image = signal('');
 
-  }
+  submitting = signal(false);
+  successMessage = signal('');
+  formError = signal('');
 
+  error = this.stateService.error;
+  loading = this.stateService.loading;
 
-    get properties(): FormArray {
-    return this.productForm.get('properties') as FormArray;
-  }
+  onSubmit(): void {
+    // Clear previous messages
+    this.formError.set('');
+    this.successMessage.set('');
+    this.stateService.clearError();
 
-  createProperty(): FormGroup {
-    return this.fb.group({
-      color: ['', Validators.required],
-      weight: ['', Validators.required]
-    });
-  }
-
-  addProperty() {
-    this.properties.push(this.createProperty());
-  }
-
-  removeProperty(index: number) {
-    if (this.properties.length > 1) {
-      this.properties.removeAt(index);
+    // Validation
+    if (!this.title() || !this.price() || !this.description() || !this.category() || !this.image()) {
+      this.formError.set('Please fill in all fields');
+      return;
     }
-  }
-onSubmit() {
-  if (this.productForm.invalid) return;
 
-  this.productService.createProduct(this.productForm.value)
-    .subscribe(() => {
-      alert('Product created successfully!');
-      this.productForm.reset();
-      this.router.navigate(['/']);
+    if (this.price()! <= 0) {
+      this.formError.set('Price must be greater than 0');
+      return;
+    }
+
+    this.submitting.set(true);
+
+    const newProduct = {
+      title: this.title(),
+      price: this.price()!,
+      description: this.description(),
+      category: this.category(),
+      image: this.image(),
+    };
+
+    this.productService.createProduct(newProduct).subscribe({
+      next: (product) => {
+        this.submitting.set(false);
+        this.successMessage.set(`Product "${product.title}" created successfully!`);
+        this.resetForm();
+        
+       
+        setTimeout(() => this.successMessage.set(''), 5000);
+      },
+      error: (err) => {
+        this.submitting.set(false);
+        console.error('Error creating product:', err);
+        this.stateService.setError('Failed to create product. Please try again.');
+      }
     });
-}
+  }
+
+  resetForm(): void {
+    this.title.set('');
+    this.price.set(null);
+    this.description.set('');
+    this.category.set('');
+    this.image.set('');
+    this.formError.set('');
+  }
 }
