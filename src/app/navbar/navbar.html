@@ -2,4 +2,6 @@
   <h1>Solo Store</h1>
   <app-search-input (searchChanged)="onSearch($event)"></app-search-input>
   <span class="cart-badge">{{ cartCount }}</span>
+  <button type="button" class="logout" (click)="logout()">Logout</button>
+
 </header>

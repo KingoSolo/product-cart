@@ -1,0 +1,21 @@
+<div class="wrap">
+  <h2>Login</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label>Email</label>
+    <input type="email" formControlName="email" placeholder="you@example.com" />
+    <p class="error" *ngIf="email?.touched && email?.invalid">
+      <span *ngIf="email?.errors?.['required']">Email is required.</span>
+      <span *ngIf="email?.errors?.['email']">Enter a valid email.</span>
+    </p>
+
+    <label>Password</label>
+    <input type="password" formControlName="password" placeholder="min 6 characters" />
+    <p class="error" *ngIf="password?.touched && password?.invalid">
+      <span *ngIf="password?.errors?.['required']">Password is required.</span>
+      <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters.</span>
+    </p>
+
+    <button type="submit" [disabled]="form.invalid">Login</button>
+  </form>
+</div>
