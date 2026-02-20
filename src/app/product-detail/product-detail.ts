@@ -27,8 +27,9 @@ export class ProductDetailComponent implements OnInit {
     this.productService.getProductById(id).subscribe(product => {
       this.product = {
         ...product,
-        name: product.title,
-        imageUrl: product.image
+       name: product.name,
+       imageUrl: product.imageUrl
+
       };
     });
   }

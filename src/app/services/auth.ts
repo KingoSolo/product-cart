@@ -1,39 +1,41 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 const STORAGE_KEY = 'userEmail';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  // Tracks auth state. BehaviorSubject stores the latest value and emits to new subscribers.
-  private authStateSubject = new BehaviorSubject<boolean>(this.hasToken());
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
-  // Exposed observable so components can subscribe without being able to "next()" it.
+  private authStateSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$: Observable<boolean> = this.authStateSubject.asObservable();
 
-  /** Login: store email as "token" and update state */
+  constructor() {
+    // Runs after DI is ready; safe to check browser here.
+    this.authStateSubject.next(this.hasToken());
+  }
+
   login(email: string): void {
-    localStorage.setItem(STORAGE_KEY, email);
+    if (this.isBrowser) localStorage.setItem(STORAGE_KEY, email);
     this.authStateSubject.next(true);
   }
 
-  /** Logout: clear token and update state */
   logout(): void {
-    localStorage.removeItem(STORAGE_KEY);
+    if (this.isBrowser) localStorage.removeItem(STORAGE_KEY);
     this.authStateSubject.next(false);
   }
 
-  /** Synchronous check (guards often prefer sync checks) */
   isLoggedIn(): boolean {
     return this.hasToken();
   }
 
-  /** Returns the stored email (the "token") */
   getCurrentUser(): string | null {
-    return localStorage.getItem(STORAGE_KEY);
+    return this.isBrowser ? localStorage.getItem(STORAGE_KEY) : null;
   }
 
   private hasToken(): boolean {
-    return !!localStorage.getItem(STORAGE_KEY);
+    return this.isBrowser && !!localStorage.getItem(STORAGE_KEY);
   }
 }
