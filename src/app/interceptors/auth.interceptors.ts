@@ -1,11 +1,17 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const email = localStorage.getItem('userEmail');
+  const platformId = inject(PLATFORM_ID);
 
-  // Only add header for product-related requests (json-server products endpoint)
-  const isProductRequest =
-    req.url.includes('/products');
+  let email: string | null = null;
+
+  if (isPlatformBrowser(platformId)) {
+    email = localStorage.getItem('userEmail');
+  }
+
+  const isProductRequest = req.url.includes('/products');
 
   if (!email || !isProductRequest) {
     return next(req);
@@ -13,8 +19,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const cloned = req.clone({
     setHeaders: {
-      'X-User-Email': email
-    }
+      'X-User-Email': email,
+    },
   });
 
   return next(cloned);

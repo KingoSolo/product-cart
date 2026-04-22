@@ -17,7 +17,12 @@
   <p class="error" *ngIf="isInvalid('price')">Price is required (min 50).</p>
 
   <label>Category</label>
-  <input formControlName="category" />
+  <select formControlName="category">
+    <option [ngValue]="null" disabled>Select category</option>
+    <option *ngFor="let category of categories" [ngValue]="category.id">
+      {{ category.name }}
+    </option>
+  </select>
   <p class="error" *ngIf="isInvalid('category')">Category is required.</p>
 
   <label>Image URL</label>

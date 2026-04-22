@@ -1,17 +1,5 @@
 import { Injectable, signal, computed } from '@angular/core';
-
-export interface Product {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  category: string;
-  image: string;
-  rating?: {
-    rate: number;
-    count: number;
-  };
-}
+import { Product } from '../models/product.model';
 
 export interface CartItem {
   product: Product;
@@ -29,6 +17,10 @@ export interface AppState {
   providedIn: 'root'
 })
 export class StateService {
+
+  private sameProductId(a: Product['id'], b: Product['id']): boolean {
+    return a !== undefined && b !== undefined && String(a) === String(b);
+  }
 
   private state = signal<AppState>({
     products: [],
@@ -94,14 +86,14 @@ export class StateService {
   addToCart(product: Product): void {
     this.state.update(state => {
       const existingItem = state.cart.find(
-        item => item.product.id === product.id
+        item => this.sameProductId(item.product.id, product.id)
       );
 
       let updatedCart: CartItem[];
 
       if (existingItem) {
         updatedCart = state.cart.map(item =>
-          item.product.id === product.id
+          this.sameProductId(item.product.id, product.id)
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -113,14 +105,18 @@ export class StateService {
     });
   }
 
-  removeFromCart(productId: number): void {
+  removeFromCart(productId: Product['id']): void {
+    if (productId === undefined) return;
+
     this.state.update(state => ({
       ...state,
-      cart: state.cart.filter(item => item.product.id !== productId)
+      cart: state.cart.filter(item => !this.sameProductId(item.product.id, productId))
     }));
   }
 
-  updateCartQuantity(productId: number, quantity: number): void {
+  updateCartQuantity(productId: Product['id'], quantity: number): void {
+    if (productId === undefined) return;
+
     if (quantity <= 0) {
       this.removeFromCart(productId);
       return;
@@ -129,7 +125,7 @@ export class StateService {
     this.state.update(state => ({
       ...state,
       cart: state.cart.map(item =>
-        item.product.id === productId
+        this.sameProductId(item.product.id, productId)
           ? { ...item, quantity }
           : item
       )

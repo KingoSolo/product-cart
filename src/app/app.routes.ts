@@ -33,6 +33,6 @@ export const routes: Routes = [
       import('./cart/cart').then(m => m.CartComponent),
   },
 
-  { path: '', redirectTo: 'products', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'products' },
 ];

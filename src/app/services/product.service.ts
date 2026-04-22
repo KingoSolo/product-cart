@@ -1,3 +1,5 @@
+import { Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -10,11 +12,13 @@ export class ProductService {
   private apiUrl = 'http://localhost:3000/products';
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private http: HttpClient,
     private errorHandler: ErrorHandlerService
   ) {}
 
   getAllProducts(): Observable<Product[]> {
+    console.log('FETCHING PRODUCTS...');
     return this.http.get<Product[]>(this.apiUrl).pipe(
       catchError((err) => throwError(() => new Error(this.errorHandler.handleError(err))))
     );

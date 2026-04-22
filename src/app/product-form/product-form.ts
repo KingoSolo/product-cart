@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormArray,
@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProductService } from '../services/product.service';
+import { Category, CategoryService } from '../services/category.service';
 import { Product } from '../models/product.model';
 
 @Component({
@@ -18,20 +19,29 @@ import { Product } from '../models/product.model';
   templateUrl: './product-form.html',
   styleUrls: ['./product-form.css'],
 })
-export class ProductFormComponent {
+export class ProductFormComponent implements OnInit {
+  private readonly fallbackCategories: Category[] = [
+    { id: 1, name: 'Audio' },
+    { id: 2, name: 'Computers' },
+    { id: 3, name: 'Accessories' },
+    { id: 4, name: 'Gaming' },
+  ];
+
   private fb = inject(FormBuilder);
   private productService = inject(ProductService);
+  private categoryService = inject(CategoryService);
   private router = inject(Router);
 
   successMessage = '';
   submitting = false;
+  categories: Category[] = [];
 
   // Main FormGroup (required by assignment)
   productForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
     description: ['', [Validators.required, Validators.minLength(10)]],
     price: [null as number | null, [Validators.required, Validators.min(50)]],
-    category: ['', [Validators.required]],
+    categoryId: [null as number | null, [Validators.required]],
     imageUrl: [
       '',
       [Validators.required, Validators.pattern(/^https?:\/\/.+/)],
@@ -46,6 +56,17 @@ export class ProductFormComponent {
   // Convenience getter for FormArray
   get properties(): FormArray<FormGroup> {
     return this.productForm.get('properties') as FormArray<FormGroup>;
+  }
+
+  ngOnInit(): void {
+    this.categoryService.getAll().subscribe({
+      next: (data) => {
+        this.categories = data.length > 0 ? data : this.fallbackCategories;
+      },
+      error: () => {
+        this.categories = this.fallbackCategories;
+      },
+    });
   }
 
   // Create each FormGroup inside FormArray
@@ -97,7 +118,7 @@ export class ProductFormComponent {
       name: formValue.name!,
       description: formValue.description!,
       price: Number(formValue.price),
-      category: formValue.category!,
+      categoryId: Number(formValue.categoryId!),
       imageUrl: formValue.imageUrl!,
       inStock: !!formValue.inStock,
       rating: Number(formValue.rating),
