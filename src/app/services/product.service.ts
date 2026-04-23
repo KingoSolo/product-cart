@@ -6,10 +6,11 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Product } from '../models/product.model';
 import { ErrorHandlerService } from './error-handler.sevice';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
-  private apiUrl = 'http://localhost:3000/products';
+  private apiUrl = `${environment.apiUrl}/products`;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
